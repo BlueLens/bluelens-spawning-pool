@@ -8,15 +8,19 @@
 from __future__ import absolute_import
 
 import redis
+import json
 
 REDIS_SERVER = 'bl-mem-store'
 
 
 class SpawningPool(object):
   def __init__(self):
+    self._server_url = REDIS_SERVER
     self._metadata_labels = {}
     self._containers = []
-    self._rconn = redis.StrictRedis(REDIS_SERVER, port=6379)
+
+  def setServerUrl(self, url=REDIS_SERVER):
+    self._server_url = url
 
   def setApiVersion(self, version):
     self._api_version = version
@@ -59,6 +63,7 @@ class SpawningPool(object):
     self._restart_policy = policy
 
   def spawn(self):
+    self._rconn = redis.StrictRedis(self._server_url, port=6379)
     config = {}
 
     config['apiVersion'] = self._api_version
@@ -75,7 +80,8 @@ class SpawningPool(object):
     spec['restartPolicy'] = self._restart_policy
     config['spec'] = spec
 
-    str_config = self.stringify(config)
+    # str_config = self.stringify(config)
+    str_config = json.dumps(config)
     print(str_config)
     self._rconn.publish('spawn/create', str_config)
 
