@@ -48,9 +48,10 @@ class SpawningPool(object):
   def setContainerName(self, container, name):
     container['name'] = name
 
-  def addContainerEnv(self, container, key, value):
+  def addContainerEnv(self, container, name, value):
     env = {}
-    env[key] = value
+    env['name'] = name
+    env['value'] = value
     container['env'].append(env)
 
   def setContainerName(self, container, name):
