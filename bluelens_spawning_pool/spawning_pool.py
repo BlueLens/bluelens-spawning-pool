@@ -89,5 +89,11 @@ class SpawningPool(object):
   def stringify(self, dic):
     return str(dic)
 
+  def delete(self, id):
+    self._rconn = redis.StrictRedis(self._server_url, port=6379)
+    self._rconn.publish('spawn/delete', id)
+
+
+
 
 
