@@ -22,6 +22,9 @@ class SpawningPool(object):
   def setServerUrl(self, url=REDIS_SERVER):
     self._server_url = url
 
+  def setServerPassword(self, password):
+    self._server_password = password
+
   def setApiVersion(self, version):
     self._api_version = version
 
@@ -64,7 +67,8 @@ class SpawningPool(object):
     self._restart_policy = policy
 
   def spawn(self):
-    self._rconn = redis.StrictRedis(self._server_url, port=6379)
+    # self._rconn = redis.StrictRedis(self._server_url, port=6379)
+    self._rconn = redis.StrictRedis(self._server_url, port=6379, password=self._server_password)
     config = {}
 
     config['apiVersion'] = self._api_version
@@ -90,7 +94,7 @@ class SpawningPool(object):
     return str(dic)
 
   def delete(self, data):
-    self._rconn = redis.StrictRedis(self._server_url, port=6379)
+    self._rconn = redis.StrictRedis(self._server_url, port=6379, password=self._server_password)
     self._rconn.publish('spawn/delete', json.dumps(data))
 
 
